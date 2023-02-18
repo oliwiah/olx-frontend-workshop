@@ -3,8 +3,9 @@ A project prepared for a frontend workshop in February 2023.
 
 ## Requirements
 - [Node v18+](https://nodejs.org/en/)
-- NPM v6.14+ (Automatically installed with Node)
-- Your favorite text editor, we recommend [VS Code](https://code.visualstudio.com) for this workshop
+- NPM v6.14+ (Automatically installed with Node).
+- Your favorite text editor, we recommend [VS Code](https://code.visualstudio.com) for this workshop but any other would work.
+- Internet browser, we recommend Google Chrome which will be used for this workshops but any other would work.
 
 # Development
 ## Initial setup
@@ -18,13 +19,6 @@ Go inside the newly created folder:
 cd olx-frontend-workshop
 ```
 
-At the root of the project create a file `.env` to store our permanent environment variables. We will need it later on. More information about environment variables can be found [here](https://create-react-app.dev/docs/adding-custom-environment-variables/#adding-development-environment-variables-in-env).
-
-For now let's just add this variable to the `.env` file
-```sh
-REACT_APP_API_BASE="http://localhost:4040"
-```
-
 Run the app using:
 ```sh
 npm start
@@ -34,3 +28,85 @@ You should see the app running on [http://localhost:3000/](http://localhost:3000
 
 ![initial-app-page](/olx-frontend-workshop/docs/images/01-initial-app-page.png)
 
+## First steps
+### Clean-up
+
+1. Let's clean up the React boilerplate starting with `App.js` file.
+```diff
+- import logo from './logo.svg';
+import './App.css';
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
++       <h1>OLX Mini App</h1>
+-       <img src={logo} className="App-logo" alt="logo" />
+-      <p>
+-        Edit <code>src/App.js</code> and save to reload.
+-       </p>
+-       <a
+-         className="App-link"
+-         href="https://reactjs.org"
+-         target="_blank"
+-         rel="noopener noreferrer"
+-       >
+-         Learn React
+-      </a>
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+2. Now let's clean up the styles we do not need anymore from `App.css`.
+```diff
+.App {
++  max-width: 1200px;
++  padding: 0 16px 16px 16px;
++  margin: auto;
+-  text-align: center;
+}
+
+- .App-logo {
+-   height: 40vmin;
+-   pointer-events: none;
+- }
+-
+- @media (prefers-reduced-motion: no-preference) {
+-  .App-logo {
+-    animation: App-logo-spin infinite 20s linear;
+-  }
+- }
+-
+.App-header {
++  text-align: center;
+-  background-color: #282c34;
+-  min-height: 100vh;
+-  display: flex;
+-  flex-direction: column;
+-  align-items: center;
+-  justify-content: center;
+-  font-size: calc(10px + 2vmin);
+-  color: white;
+}
+-
+- .App-link {
+-  color: #61dafb;
+-}
+-
+- @keyframes App-logo-spin {
+-  from {
+-    transform: rotate(0deg);
+-  }
+-  to {
+-    transform: rotate(360deg);
+-  }
+- }
+```
+
+3. Remove `logo.svg` file from the `/src` folder.
+
+### Configuration
