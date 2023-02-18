@@ -1,70 +1,112 @@
-# Getting Started with Create React App
+# OLX Frontend Workshop
+A project prepared for a frontend workshop in February 2023.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Requirements
+- [Node v18+](https://nodejs.org/en/)
+- NPM v6.14+ (Automatically installed with Node).
+- Your favorite text editor, we recommend [VS Code](https://code.visualstudio.com) for this workshop but any other would work.
+- Internet browser, we recommend Google Chrome which will be used for this workshops but any other would work.
 
-## Available Scripts
+# Development
+## Initial setup
+Start by quickly setting up a single-page React application using [Create React App](https://reactjs.org/docs/create-a-new-react-app.html#create-react-app).
+```sh
+npx create-react-app olx-frontend-workshop
+```
 
-In the project directory, you can run:
+Go inside the newly created folder:
+```sh
+cd olx-frontend-workshop
+```
 
-### `npm start`
+Run the app using:
+```sh
+npm start
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+You should see the app running on [http://localhost:3000/](http://localhost:3000/).
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+![initial-app-page](/olx-frontend-workshop/docs/images/01-initial-app-page.png)
 
-### `npm test`
+## First steps
+### Clean-up
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Let's clean up the React boilerplate starting with `App.js` file.
+```diff
+- import logo from './logo.svg';
+import './App.css';
 
-### `npm run build`
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
++       <h1>OLX Mini App</h1>
+-       <img src={logo} className="App-logo" alt="logo" />
+-      <p>
+-        Edit <code>src/App.js</code> and save to reload.
+-       </p>
+-       <a
+-         className="App-link"
+-         href="https://reactjs.org"
+-         target="_blank"
+-         rel="noopener noreferrer"
+-       >
+-         Learn React
+-      </a>
+      </header>
+    </div>
+  );
+}
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+export default App;
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Now let's clean up the styles we do not need anymore from `App.css`.
+```diff
+.App {
++  max-width: 1200px;
++  padding: 0 16px 16px 16px;
++  margin: auto;
+-  text-align: center;
+}
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- .App-logo {
+-   height: 40vmin;
+-   pointer-events: none;
+- }
+-
+- @media (prefers-reduced-motion: no-preference) {
+-  .App-logo {
+-    animation: App-logo-spin infinite 20s linear;
+-  }
+- }
+-
+.App-header {
++  text-align: center;
+-  background-color: #282c34;
+-  min-height: 100vh;
+-  display: flex;
+-  flex-direction: column;
+-  align-items: center;
+-  justify-content: center;
+-  font-size: calc(10px + 2vmin);
+-  color: white;
+}
+-
+- .App-link {
+-  color: #61dafb;
+-}
+-
+- @keyframes App-logo-spin {
+-  from {
+-    transform: rotate(0deg);
+-  }
+-  to {
+-    transform: rotate(360deg);
+-  }
+- }
+```
 
-### `npm run eject`
+3. Remove `logo.svg` file from the `/src` folder.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Configuration
