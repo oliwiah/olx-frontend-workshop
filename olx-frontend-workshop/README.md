@@ -159,7 +159,7 @@ services:
     volumes:
       - ".:/app"
     env_file: .env
-    container_name: mini-olx-frontend
+    container_name: olx-frontend-workshop
 
   database:
     image: mysql:5.7.22
@@ -221,3 +221,128 @@ docker-compose up
 
 Once the dependencies load (it will take a moment), our page should look like this:
 ![app-ran-by-Docker](/olx-frontend-workshop/docs/images/02-app-ran-by-Docker.png)
+
+## Posting Form
+Now, it is time to focus on creating the frontend parts of the application. We will start with the posting form.
+
+1. Let's start by creating a `components` folder inside the `/src` folder where we will store the our components. The keep some order, we will create a folder inside `/components` called `PostingForm` where we will add two files: `PostingForm.jsx` and `PostingForm.css`.
+After those changes, the structure should look like this:
+```sh
+.
+├── Dockerfile
+├── docker-compose.yml
+├── README.md
+├── package-lock.json
+├── package.json
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── logo192.png
+│   ├── logo512.png
+│   ├── manifest.json
+│   └── robots.txt
+└── src
+    ├── App.css
+    ├── App.js
+    ├── App.test.js
+    ├── config
+    │   └── index.js
+    └── components
+        └── PostingForm
+          ├── PostingForm.jsx
+          └── PostingForm.css
+    ├── index.css
+    ├── index.js
+    ├── reportWebVitals.js
+    └── setupTests.js
+```
+
+2. Time to create our first component :) Add below content to `PostingForm.jsx`:
+```jsx
+import React, { useRef } from "react";
+import config from "../../config";
+import "./PostingForm.css";
+
+const PostingForm = (props) => {
+  const { onPostAd = () => {} } = props;
+  const formRef = useRef(null);
+
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+    const data = new FormData(e.target);
+
+    fetch(config.api_ads, {
+      method: "POST",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        onPostAd();
+        formRef.current.reset();
+      })
+      .catch(console.error);
+  };
+
+  return (
+    <form onSubmit={handleOnSubmit} className="form__posting" ref={formRef}>
+      <h2>Post New Ad</h2>
+      <label htmlFor="title">
+        Title:
+        <input id="title" name="title" type="text" required />
+      </label>
+      <label htmlFor="price">
+        Price:
+        <input id="price" type="number" name="price" step="0.01" required />
+      </label>
+      <label htmlFor="description">
+        Description:
+        <textarea id="description" name="description" required />
+      </label>
+      <label htmlFor="ad_image">
+        Image:
+        <input id="ad_image" name="ad_image" type="file" required />
+      </label>
+      <button type="submit">Post</button>
+    </form>
+  );
+};
+
+export default PostingForm;
+```
+
+3. Add styles to `PostingForm.css`:
+```css
+.form__posting label {
+  display: block;
+  margin-top: 8px;
+}
+
+.form__posting button {
+  margin: 8px 0;
+}
+```
+
+4. Attach PostingForm to our `App.js`
+```diff
+import './App.css';
++ import PostingForm from './components/PostingForm/PostingForm';
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <h1>OLX Mini App</h1>
+      </header>
++      <main>
++        <PostingForm />
++      </main>
+    </div>
+  );
+}
+
+export default App;
+```
+
+At this point, the application should look like this  :point_down: Try posting some ads!  :sparkler:
+![app-ran-by-Docker](/olx-frontend-workshop/docs/images/03-posting-form.png)
+

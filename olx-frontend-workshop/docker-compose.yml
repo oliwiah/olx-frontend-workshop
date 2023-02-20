@@ -9,7 +9,7 @@ services:
     volumes:
       - ".:/app"
     env_file: .env
-    container_name: mini-olx-frontend
+    container_name: olx-frontend-workshop
 
   database:
     image: mysql:5.7.22
