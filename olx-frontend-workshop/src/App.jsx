@@ -6,12 +6,20 @@ import config from "./config";
 
 const Wrapper = styled.div`
   max-width: 1200px;
-  padding: 0 16px 16px 16px;
   margin: auto;
+  background-color: #f2f4f5;
 `;
 
 const AppHeader = styled.header`
   text-align: center;
+  background-color: #002f34;
+  color: white;
+  padding: 6px;
+  margin-bottom: 12px;
+`;
+
+const Main = styled.main`
+  padding: 0 16px 16px 16px;
 `;
 
 function App() {
@@ -47,11 +55,11 @@ function App() {
       <AppHeader>
         <h1>OLX Mini App</h1>
       </AppHeader>
-      <main>
+      <Main>
         <PostingForm onPostAd={handleOnPostAd} />
         <hr />
         <Ads ads={ads} onDeleteAd={handleOnDelete} />
-      </main>
+      </Main>
     </Wrapper>
   );
 }
