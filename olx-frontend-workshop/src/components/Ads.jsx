@@ -1,7 +1,7 @@
 import React from "react";
-import styled from 'styled-components';
-// import { Card } from "antd";
-// import { DeleteFilled } from "@ant-design/icons";
+import styled from "styled-components";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 
 const UnorderedList = styled.ul`
   list-style: none;
@@ -12,8 +12,6 @@ const UnorderedList = styled.ul`
 const ListItem = styled.li`
   margin-bottom: 16px;
 `;
-
-const { Meta } = Card;
 
 const Ads = (props) => {
   const { ads = [], onDeleteAd = () => {} } = props;
@@ -26,22 +24,18 @@ const Ads = (props) => {
         {ads?.map((ad) => {
           return (
             <ListItem key={ad.id}>
-              {/* <Card
-                style={{ width: 240 }}
-                cover={
-                  ad.ad_image ? <img alt="example" src={ad.ad_image} /> : null
-                }
-                // actions={[
-                //   <DeleteFilled
-                //     key={"delete-ad"}
-                //     onClick={() => onDeleteAd(ad.id)}
-                //   />,
-                // ]}
-              >
-                <Meta title={ad.title} description={ad.description} />
-                <p>Price: {ad.price}</p>
-                <p>ID: {ad.id}</p>
-              </Card> */}
+              <Card style={{ width: 240 }}>
+                <Card.Img src={ad.ad_image ?? null} />
+                <Card.Body>
+                  <Card.Title>{ad.title}</Card.Title>
+                  <Card.Subtitle>{ad.description}</Card.Subtitle>
+                  <Card.Text>Price: {ad.price}</Card.Text>
+                  <Card.Text>ID: {ad.id}</Card.Text>
+                  <Button variant="secondary" onClick={() => onDeleteAd(ad.id)}>
+                    Delete ad
+                  </Button>
+                </Card.Body>
+              </Card>
             </ListItem>
           );
         })}

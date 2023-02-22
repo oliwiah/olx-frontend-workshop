@@ -158,7 +158,7 @@ We are now able to use styled components in this file so our component should lo
 
 2. Remove `App.css` file.
 
-### Configuration
+### Docker configuration
 
 1. Add a configuration file which will be needed later on to reach our API. In order to do that, create a new folder in `/src` scope called `config` and inside it, create an `index.js` file with below content:
 ```js
@@ -264,6 +264,20 @@ docker-compose up
 
 Once the dependencies load (it will take a moment), our page should look like this:
 ![app-ran-by-Docker](/olx-frontend-workshop/docs/images/02-app-ran-by-Docker.png)
+
+### Adding Bootstrap
+
+In order to save some time styling the UI later on, we are going to add an external library called [Bootstrap](https://react-bootstrap.github.io/) to our project. This will allow us to use predefined UI components.
+
+1. Install it by running:
+```sh
+npm install --save react-bootstrap bootstrap
+```
+
+2. Add below import to `index.js` file:
+```sh
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+```
 
 ## Posting Form
 Now, it is time to focus on creating the frontend parts of the application. We will start with the posting form.
@@ -426,20 +440,22 @@ Your project structure should be similar to this:
       └── setupTests.js
 ```
 
-==============
-
-2. In order to improve our UI, we are going to add an external library called [Ant Design](https://ant.design) to our project. Install it by running:
-```sh
-npm install antd @ant-design/icons
-```
-
-3. Finally, let's focus on creating the ads listing component. Add below code to `Ads.jsx`:
+2. Finally, let's focus on creating the ads listing component. Add below code to `Ads.jsx`:
 ```jsx
 import React from "react";
-import { Card } from "antd";
-import { DeleteFilled } from "@ant-design/icons";
+import styled from "styled-components";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 
-const { Meta } = Card;
+const UnorderedList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+`;
+
+const ListItem = styled.li`
+  margin-bottom: 16px;
+`;
 
 const Ads = (props) => {
   const { ads = [], onDeleteAd = () => {} } = props;
@@ -448,30 +464,26 @@ const Ads = (props) => {
     <>
       <h2>All Ads</h2>
 
-      <ul className="list__ads">
+      <UnorderedList>
         {ads?.map((ad) => {
           return (
-            <li key={ad.id}>
-              <Card
-                style={{ width: 240 }}
-                cover={
-                  ad.ad_image ? <img alt="example" src={ad.ad_image} /> : null
-                }
-                actions={[
-                  <DeleteFilled
-                    key={"delete-ad"}
-                    onClick={() => onDeleteAd(ad.id)}
-                  />,
-                ]}
-              >
-                <Meta title={ad.title} description={ad.description} />
-                <p>Price: {ad.price}</p>
-                <p>ID: {ad.id}</p>
+            <ListItem key={ad.id}>
+              <Card style={{ width: 240 }}>
+                <Card.Img src={ad.ad_image ?? null} />
+                <Card.Body>
+                  <Card.Title>{ad.title}</Card.Title>
+                  <Card.Subtitle>{ad.description}</Card.Subtitle>
+                  <Card.Text>Price: {ad.price}</Card.Text>
+                  <Card.Text>ID: {ad.id}</Card.Text>
+                  <Button variant="secondary" onClick={() => onDeleteAd(ad.id)}>
+                    Delete ad
+                  </Button>
+                </Card.Body>
               </Card>
-            </li>
+            </ListItem>
           );
         })}
-      </ul>
+      </UnorderedList>
     </>
   );
 };
@@ -479,12 +491,24 @@ const Ads = (props) => {
 export default Ads;
 ```
 
-5. Now, we have to connect our newly created Ads component to our App. We need to import it in the `App.jsx` file and also create two functions. First one should fetch our ads from the backend and the second one should delete an ad.
+3. Now, we have to connect our newly created Ads component to our App. We need to import it in the `App.jsx` file and also create two functions. First one should fetch our ads from the backend and the second one should delete an ad.
 
 ```diff
 + import { useState, useEffect } from "react";
+import styled from 'styled-components';
 import PostingForm from "./components/PostingForm";
 + import Ads from "./components/Ads";
++ import config from "./config";
+
+const Wrapper = styled.div`
+  max-width: 1200px;
+  padding: 0 16px 16px 16px;
+  margin: auto;
+`;
+
+const AppHeader = styled.header`
+  text-align: center;
+`;
 
 function App() {
 +  const [ads, setAds] = useState([]);
@@ -512,16 +536,16 @@ function App() {
 +  }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
+    <Wrapper>
+      <AppHeader>
         <h1>Mini OLX</h1>
-      </header>
+      </AppHeader>
       <main>
         <PostingForm />
 +       <hr />
 +       <Ads ads={ads} onDeleteAd={handleOnDelete}/>
       </main>
-    </div>
+    </Wrapper>
   );
 }
 ```
