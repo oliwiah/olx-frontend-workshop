@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import styled from 'styled-components';
+import styled from "styled-components";
 import PostingForm from "./components/PostingForm";
 import Ads from "./components/Ads";
 import config from "./config";
@@ -34,17 +34,21 @@ function App() {
       .catch((err) => console.error(err));
   };
 
+  const handleOnPostAd = () => {
+    fetchAllAds();
+  };
+
   useEffect(() => {
     fetchAllAds();
   }, []);
-  
+
   return (
     <Wrapper>
       <AppHeader>
         <h1>OLX Mini App</h1>
       </AppHeader>
       <main>
-        <PostingForm />
+        <PostingForm onPostAd={handleOnPostAd} />
         <hr />
         <Ads ads={ads} onDeleteAd={handleOnDelete} />
       </main>

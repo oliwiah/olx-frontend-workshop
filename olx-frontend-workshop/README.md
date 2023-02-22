@@ -549,3 +549,73 @@ function App() {
   );
 }
 ```
+
+4. Right now newly created ad appears on the page only after we reload it. Let's fix it by adding `handleOnPostAd()` function which will be called once a new ad is posted. Add the following to the `App.jsx`:
+
+```diff
+import { useState, useEffect } from "react";
+import styled from "styled-components";
+import PostingForm from "./components/PostingForm";
+import Ads from "./components/Ads";
+import config from "./config";
+
+const Wrapper = styled.div`
+  max-width: 1200px;
+  padding: 0 16px 16px 16px;
+  margin: auto;
+`;
+
+const AppHeader = styled.header`
+  text-align: center;
+`;
+
+function App() {
+  const [ads, setAds] = useState([]);
+
+  const fetchAllAds = () => {
+    fetch(config.api_ads)
+      .then((res) => res.json())
+      .then((response) => setAds(response.data))
+      .catch((err) => console.error(err));
+  };
+
+  const handleOnDelete = (adId) => {
+    if (!adId) {
+      return;
+    }
+    fetch(`${config.api_ads}/${adId}`, { method: "DELETE" })
+      .then((res) => res.json())
+      .then((response) => fetchAllAds())
+      .catch((err) => console.error(err));
+  };
+
++ const handleOnPostAd = () => {
++   fetchAllAds();
++ };
+
+  useEffect(() => {
+    fetchAllAds();
+  }, []);
+
+  return (
+    <Wrapper>
+      <AppHeader>
+        <h1>OLX Mini App</h1>
+      </AppHeader>
+      <main>
++       <PostingForm onPostAd={handleOnPostAd} />
+        <hr />
+        <Ads ads={ads} onDeleteAd={handleOnDelete} />
+      </main>
+    </Wrapper>
+  );
+}
+
+export default App;
+```
+
+Now your page should look like this :point_down:
+![](docs/images/04-app-with-ads.png)
+
+If you reached this place - congratulations! You have a working single-page application 	:raised_hands:
+![congratulations](docs/images/05-congratulations.gif)
