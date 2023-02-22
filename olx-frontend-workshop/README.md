@@ -24,6 +24,11 @@ cd olx-frontend-workshop
 
 At the root of the project, create an `.env` file where permanent variables will be kept. You can learn more about environment variables [here](https://create-react-app.dev/docs/adding-custom-environment-variables/#adding-development-environment-variables-in-env).
 
+We will also need the styling library, so install [styled components](https://styled-components.com/docs/basics) by using:
+```sh
+npm install --save styled-components
+```
+
 Run the app using:
 ```sh
 npm start
@@ -114,6 +119,45 @@ export default App;
 
 3. Remove `logo.svg` file from the `/src` folder.
 
+### CSS into CSS-in-JS transformation
+
+The initial project was created with `.css` files but we will be using `styled-components` library for using CSS-in-JS technique. We will leave `index.css` file as it is but we need to get rid of `App.css` file. 
+
+1. Let's rename `App.js` file into `App.jsx` and insert this code right below the imports:
+```diff
+import { useState, useEffect } from "react";
+import styled from 'styled-components';
+- import "./App.css";
+
++ const App = styled.div`
++   max-width: 1200px;
++   padding: 0 16px 16px 16px;
++   margin: auto;
++ `;
+
++ const AppHeader = styled.header`
++   text-align: center;
++ `;
+```
+
+We are now able to use styled components in this file so our component should look like this:
+```diff
+  return (
++   <App>
++     <AppHeader>
+        <h1>OLX Mini App</h1>
++     </AppHeader>
+      <main>
+        <PostingForm />
+        <hr />
+        <Ads ads={ads} onDeleteAd={handleOnDelete} />
+      </main>
++   </App>
+  );
+```
+
+2. Remove `App.css` file.
+
 ### Configuration
 
 1. Add a configuration file which will be needed later on to reach our API. In order to do that, create a new folder in `/src` scope called `config` and inside it, create an `index.js` file with below content:
@@ -187,30 +231,29 @@ volumes:
 ```
 
 Right now your folder structure should look similar to this:
-```sh
-.
-├── Dockerfile
-├── docker-compose.yml
-├── README.md
-├── package-lock.json
-├── package.json
-├── public
-│   ├── favicon.ico
-│   ├── index.html
-│   ├── logo192.png
-│   ├── logo512.png
-│   ├── manifest.json
-│   └── robots.txt
-└── src
-    ├── App.css
-    ├── App.js
-    ├── App.test.js
-    ├── config
-    │   └── index.js
-    ├── index.css
-    ├── index.js
-    ├── reportWebVitals.js
-    └── setupTests.js
+```diff
+  .
++ ├── Dockerfile
++ ├── docker-compose.yml
+  ├── README.md
+  ├── package-lock.json
+  ├── package.json
+  ├── public
+  │   ├── favicon.ico
+  │   ├── index.html
+  │   ├── logo192.png
+  │   ├── logo512.png
+  │   ├── manifest.json
+  │   └── robots.txt
+  └── src
+      ├── App.jsx
+      ├── App.test.js
+      ├── config
+      │   └── index.js
+      ├── index.css
+      ├── index.js
+      ├── reportWebVitals.js
+      └── setupTests.js
 ```
 
 4. Run the project using Docker command.
@@ -225,43 +268,49 @@ Once the dependencies load (it will take a moment), our page should look like th
 ## Posting Form
 Now, it is time to focus on creating the frontend parts of the application. We will start with the posting form.
 
-1. Let's start by creating a `components` folder inside the `/src` folder where we will store the our components. The keep some order, we will create a folder inside `/components` called `PostingForm` where we will add two files: `PostingForm.jsx` and `PostingForm.css`.
+1. Let's start by creating a `components` folder inside the `/src` folder where we will store the our components. Then, inside the `/components` folder, create a file called `PostingForm.jsx`.
 After those changes, the structure should look like this:
-```sh
-.
-├── Dockerfile
-├── docker-compose.yml
-├── README.md
-├── package-lock.json
-├── package.json
-├── public
-│   ├── favicon.ico
-│   ├── index.html
-│   ├── logo192.png
-│   ├── logo512.png
-│   ├── manifest.json
-│   └── robots.txt
-└── src
-    ├── App.css
-    ├── App.js
-    ├── App.test.js
-    ├── config
-    │   └── index.js
-    └── components
-        └── PostingForm
-          ├── PostingForm.jsx
-          └── PostingForm.css
-    ├── index.css
-    ├── index.js
-    ├── reportWebVitals.js
-    └── setupTests.js
+```diff
+  .
+  ├── Dockerfile
+  ├── docker-compose.yml
+  ├── README.md
+  ├── package-lock.json
+  ├── package.json
+  ├── public
+  │   ├── favicon.ico
+  │   ├── index.html
+  │   ├── logo192.png
+  │   ├── logo512.png
+  │   ├── manifest.json
+  │   └── robots.txt
+  └── src
+      ├── App.jsx
+      ├── App.test.js
+      ├── config
+      │   └── index.js
++     └── components
++         └── PostingForm.jsx
+      ├── index.css
+      ├── index.js
+      ├── reportWebVitals.js
+      └── setupTests.js
 ```
 
 2. Time to create our first component :) Add below content to `PostingForm.jsx`:
 ```jsx
 import React, { useRef } from "react";
-import config from "../../config";
-import "./PostingForm.css";
+import styled from 'styled-components';
+import config from "../config";
+
+const Label = styled.label`
+  display: block;
+  margin-top: 8px;
+`;
+
+const Button = styled.button`
+  margin: 8px 0;
+`;
 
 const PostingForm = (props) => {
   const { onPostAd = () => {} } = props;
@@ -276,7 +325,7 @@ const PostingForm = (props) => {
       body: data,
     })
       .then((res) => res.json())
-      .then((response) => {
+      .then(() => {
         onPostAd();
         formRef.current.reset();
       })
@@ -284,25 +333,25 @@ const PostingForm = (props) => {
   };
 
   return (
-    <form onSubmit={handleOnSubmit} className="form__posting" ref={formRef}>
+    <form onSubmit={handleOnSubmit} ref={formRef}>
       <h2>Post New Ad</h2>
-      <label htmlFor="title">
+      <Label htmlFor="title">
         Title:
         <input id="title" name="title" type="text" required />
-      </label>
-      <label htmlFor="price">
+      </Label>
+      <Label htmlFor="price">
         Price:
         <input id="price" type="number" name="price" step="0.01" required />
-      </label>
-      <label htmlFor="description">
+      </Label>
+      <Label htmlFor="description">
         Description:
         <textarea id="description" name="description" required />
-      </label>
-      <label htmlFor="ad_image">
+      </Label>
+      <Label htmlFor="ad_image">
         Image:
         <input id="ad_image" name="ad_image" type="file" required />
-      </label>
-      <button type="submit">Post</button>
+      </Label>
+      <Button type="submit">Post</Button>
     </form>
   );
 };
@@ -310,33 +359,30 @@ const PostingForm = (props) => {
 export default PostingForm;
 ```
 
-3. Add styles to `PostingForm.css`:
-```css
-.form__posting label {
-  display: block;
-  margin-top: 8px;
-}
-
-.form__posting button {
-  margin: 8px 0;
-}
-```
-
-4. Attach PostingForm to our `App.js`
+3. Attach PostingForm to our `App.jsx`
 ```diff
-import './App.css';
-+ import PostingForm from './components/PostingForm/PostingForm';
++ import PostingForm from './components/PostingForm';
+
+const Wrapper = styled.div`
+  max-width: 1200px;
+  padding: 0 16px 16px 16px;
+  margin: auto;
+`;
+
+const AppHeader = styled.header`
+  text-align: center;
+`;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
+    <Wrapper>
+      <Header>
         <h1>OLX Mini App</h1>
-      </header>
+      </Header>
 +      <main>
 +        <PostingForm />
 +      </main>
-    </div>
+    </Wrapper>
   );
 }
 
@@ -346,3 +392,136 @@ export default App;
 At this point, the application should look like this  :point_down: Try posting some ads!  :sparkler:
 ![app-ran-by-Docker](/olx-frontend-workshop/docs/images/03-posting-form.png)
 
+## Ad listing
+Since we can already ad adverts in our application, let's create a way to present them. 
+1. Start by creating `Ads.jsx` file under `/src/components`.
+
+Your project structure should be similar to this:
+```diff
+  .
+  ├── Dockerfile
+  ├── docker-compose.yml
+  ├── README.md
+  ├── package-lock.json
+  ├── package.json
+  ├── public
+  │   ├── favicon.ico
+  │   ├── index.html
+  │   ├── logo192.png
+  │   ├── logo512.png
+  │   ├── manifest.json
+  │   └── robots.txt
+  └── src
+      ├── App.css
+      ├── App.jsx
+      ├── App.test.js
+      ├── config
+      │   └── index.js
+      └── components
++         └── Ads.jsx
+          └── PostingForm.jsx
+      ├── index.css
+      ├── index.js
+      ├── reportWebVitals.js
+      └── setupTests.js
+```
+
+==============
+
+2. In order to improve our UI, we are going to add an external library called [Ant Design](https://ant.design) to our project. Install it by running:
+```sh
+npm install antd @ant-design/icons
+```
+
+3. Finally, let's focus on creating the ads listing component. Add below code to `Ads.jsx`:
+```jsx
+import React from "react";
+import { Card } from "antd";
+import { DeleteFilled } from "@ant-design/icons";
+
+const { Meta } = Card;
+
+const Ads = (props) => {
+  const { ads = [], onDeleteAd = () => {} } = props;
+
+  return (
+    <>
+      <h2>All Ads</h2>
+
+      <ul className="list__ads">
+        {ads?.map((ad) => {
+          return (
+            <li key={ad.id}>
+              <Card
+                style={{ width: 240 }}
+                cover={
+                  ad.ad_image ? <img alt="example" src={ad.ad_image} /> : null
+                }
+                actions={[
+                  <DeleteFilled
+                    key={"delete-ad"}
+                    onClick={() => onDeleteAd(ad.id)}
+                  />,
+                ]}
+              >
+                <Meta title={ad.title} description={ad.description} />
+                <p>Price: {ad.price}</p>
+                <p>ID: {ad.id}</p>
+              </Card>
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  );
+};
+
+export default Ads;
+```
+
+5. Now, we have to connect our newly created Ads component to our App. We need to import it in the `App.jsx` file and also create two functions. First one should fetch our ads from the backend and the second one should delete an ad.
+
+```diff
++ import { useState, useEffect } from "react";
+import PostingForm from "./components/PostingForm";
++ import Ads from "./components/Ads";
+
+function App() {
++  const [ads, setAds] = useState([]);
++
++  const fetchAllAds = () => {
++    fetch(config.api_ads)
++      .then((res) => res.json())
++      .then((response) => setAds(response.data))
++      .catch((err) => console.error(err));
++  };
++
++  const handleOnDelete = (adId) => {
++    if (!adId) {
++      return;
++    }
++    fetch(`${config.api_ads}/${adId}`, { method: "DELETE" })
++      .then((res) => res.json())
++      .then((response) => fetchAllAds())
++      .catch((err) => console.error(err));
++  };
+
++
++  useEffect(() => {
++    fetchAllAds();
++  }, []);
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <h1>Mini OLX</h1>
+      </header>
+      <main>
+        <PostingForm />
++       <hr />
++       <Ads ads={ads} onDeleteAd={handleOnDelete}/>
+      </main>
+    </div>
+  );
+}
+```

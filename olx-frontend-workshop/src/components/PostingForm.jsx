@@ -1,6 +1,15 @@
 import React, { useRef } from "react";
-import config from "../../config";
-import "./PostingForm.css";
+import styled from 'styled-components';
+import config from "../config";
+
+const Label = styled.label`
+  display: block;
+  margin-top: 8px;
+`;
+
+const Button = styled.button`
+  margin: 8px 0;
+`;
 
 const PostingForm = (props) => {
   const { onPostAd = () => {} } = props;
@@ -23,25 +32,25 @@ const PostingForm = (props) => {
   };
 
   return (
-    <form onSubmit={handleOnSubmit} className="form__posting" ref={formRef}>
+    <form onSubmit={handleOnSubmit} ref={formRef}>
       <h2>Post New Ad</h2>
-      <label htmlFor="title">
+      <Label htmlFor="title">
         Title:
         <input id="title" name="title" type="text" required />
-      </label>
-      <label htmlFor="price">
+      </Label>
+      <Label htmlFor="price">
         Price:
         <input id="price" type="number" name="price" step="0.01" required />
-      </label>
-      <label htmlFor="description">
+      </Label>
+      <Label htmlFor="description">
         Description:
         <textarea id="description" name="description" required />
-      </label>
-      <label htmlFor="ad_image">
+      </Label>
+      <Label htmlFor="ad_image">
         Image:
         <input id="ad_image" name="ad_image" type="file" required />
-      </label>
-      <button type="submit">Post</button>
+      </Label>
+      <Button type="submit">Post</Button>
     </form>
   );
 };
