@@ -37,6 +37,7 @@ function App() {
   useEffect(() => {
     fetchAllAds();
   }, []);
+  
   return (
     <Wrapper>
       <AppHeader>
